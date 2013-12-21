@@ -61,9 +61,11 @@ I assume that everyone knows BackboneJS basics or at least understands it as pse
   <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">statsModel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsModel</span><span class="p">(),</span>
         <span class="nx">statsView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsView</span><span class="p">({</span><span class="nx">model</span><span class="o">:</span> <span class="nx">statsModel</span><span class="p">});</span>
-    <span class="nx">statsModel</span><span class="p">.</span><span class="nx">fetch</span><span class="p">({</span><span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">'.user'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">statsView</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span>
-    <span class="p">}});</span>
+    <span class="nx">statsModel</span><span class="p">.</span><span class="nx">fetch</span><span class="p">({</span>
+      <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">'.user'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">statsView</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
   <span class="p">}</span>
 <span class="p">});</span>
 </pre></div>
@@ -136,14 +138,13 @@ Anything you want.</p>
 
 <span class="nx">define</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">require</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">Model</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./model'</span><span class="p">),</span>
-      <span class="nx">View</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./view'</span><span class="p">);</span>
-
-  <span class="kd">function</span> <span class="nx">Controller</span><span class="p">()</span> <span class="p">{</span>
-  <span class="p">}</span>
+      <span class="nx">View</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./view'</span><span class="p">),</span>
+      <span class="nx">Controller</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{}</span>
 
   <span class="nx">Controller</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">showDetails</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">container</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">container</span> <span class="o">=</span> <span class="nx">container</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span> <span class="o">||</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">();</span>
+
     <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">isNew</span><span class="p">())</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fetch</span><span class="p">({</span><span class="nx">success</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_renderDetails</span><span class="p">});</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
@@ -167,19 +168,20 @@ Anything you want.</p>
 <div class="highlight highlight-js"><pre><span class="c1">// modules/stats/main.js</span>
 
 <span class="nx">define</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">require</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">$</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'jquery'</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">$</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'jquery'</span><span class="p">),</span>
+      <span class="nx">Controller</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{}</span>
 
-  <span class="k">return</span> <span class="p">{</span>
-    <span class="nx">showDetails</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">container</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">$</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/stats'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">$</span><span class="p">(</span><span class="nx">container</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s1">'&lt;stats&gt;'</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">stats</span> <span class="o">+</span> <span class="s1">'&lt;/stats&gt;'</span><span class="p">);</span>
-      <span class="p">});</span>
-    <span class="p">};</span>
+  <span class="nx">Controller</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">showDetails</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">container</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/stats'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="nx">container</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s1">'&lt;stats&gt;'</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">stats</span> <span class="o">+</span> <span class="s1">'&lt;/stats&gt;'</span><span class="p">);</span>
+    <span class="p">});</span>
   <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">Controller</span><span class="p">;</span>
 <span class="p">});</span>
 </pre></div>
 
-<p>Internal implementation is hidden so developers are not care what's happens inside. Want show stats details? Okay - call showDetails in Stats Component.</p>
+<p>Internal implementation is hidden so developers are not care what's happens inside. Want show stats details? Okay - use showDetails method of Stats component.</p>
 
 <h2>
 <a name="benefits" class="anchor" href="#benefits"><span class="octicon octicon-link"></span></a>Benefits</h2>
