@@ -52,7 +52,7 @@ I assume that everyone knows BackboneJS basics or at least understands it as pse
 
 <p>For example:</p>
 
-<div class="highlight highlight-js"><pre><span class="nx">header</span><span class="o">-</span><span class="nx">view</span><span class="p">.</span><span class="nx">js</span>
+<div class="highlight highlight-js"><pre><span class="c1">//header-view.js</span>
 
 <span class="kd">var</span> <span class="nx">StatsView</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'views/stats'</span><span class="p">),</span>
     <span class="nx">StatsModel</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'models/stats'</span><span class="p">);</span>
@@ -84,15 +84,105 @@ Bad - Header view should know about internal Stats view implementation. It shoul
 
 <p>Developers should always keep in mind whole project because they should know what part of the project is using current file (view, model etc) they are working on.</p>
 
-<p>This is fine for small projects but a problem for another. Developers start feel fatigue very fast.
-Each modification requires "compile whole project in the head" to understand what can be broken and who can use this file.</p>
+<p>This is fine for small projects but a problem for another. Sometimes we are working with thousands files on one project. And dependencies can be so complex for example this view extends that view which has another mixin we want to change...</p>
 
-<p>They want start working on something new and small again.</p>
+<p>Developers start feel fatigue very fast.
+Each modification requires "compiling whole project in the head" to understand what can be broken and what can be affected by this change.</p>
+
+<p>As result - they want start working on something new and small again.</p>
 
 <h3>
 <a name="dry-dont-repeat-yourself" class="anchor" href="#dry-dont-repeat-yourself"><span class="octicon octicon-link"></span></a>DRY (don't repeat yourself)</h3>
 
-<p>I think everyone knows this rule. </p>
+<p>I think everyone knows this principle. But do we really follow it if we still should write same code (create model, fetching, create view) again and again?</p>
+
+<p>The main goal DRY is allow to create something that can be reusable but not cause Cross dependencies and Big scope issues.</p>
+
+<h1>
+<a name="component-based-architecture" class="anchor" href="#component-based-architecture"><span class="octicon octicon-link"></span></a>Component-based architecture</h1>
+
+<p>This is not something new.
+I have just collected practices which helped me solve problems together and use them in my projects. And it works (at least for me).</p>
+
+<h2>
+<a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h2>
+
+<p>The main goal is create reusable components which provides Public API and hides implementation inside.</p>
+
+<p>For example:</p>
+
+<div class="highlight highlight-js"><pre><span class="c1">// header-view.js</span>
+
+<span class="kd">var</span> <span class="nx">StatsModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/stats'</span><span class="p">),</span>
+    <span class="nx">statusModuleIns</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsModule</span><span class="p">();</span>
+
+<span class="kd">var</span> <span class="nx">HeaderView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">statusModuleIns</span><span class="p">.</span><span class="nx">showDetails</span><span class="p">({</span>
+      <span class="nx">container</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">'.user'</span><span class="p">)</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>This case we follow DRY as much as possible - no code duplication. As bonus we received reusable Stats component which hides implementation and gives Public API - showDetails method.</p>
+
+<p>What inside?
+Anything you want.</p>
+
+<p>Example 1:</p>
+
+<div class="highlight highlight-js"><pre><span class="c1">// modules/stats/main.js</span>
+
+<span class="nx">define</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">require</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">Model</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./model'</span><span class="p">),</span>
+      <span class="nx">View</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./view'</span><span class="p">);</span>
+
+  <span class="kd">function</span> <span class="nx">Controller</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">}</span>
+
+  <span class="nx">Controller</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">showDetails</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">container</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">container</span> <span class="o">=</span> <span class="nx">container</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">model</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span> <span class="o">||</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">isNew</span><span class="p">())</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">fetch</span><span class="p">({</span><span class="nx">success</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_renderDetails</span><span class="p">});</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_renderDetails</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">Controller</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">_renderDetails</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">detailsView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">View</span><span class="p">({</span>
+      <span class="nx">model</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span>
+      <span class="nx">container</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">container</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">Controller</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>Or even Example 2:</p>
+
+<div class="highlight highlight-js"><pre><span class="c1">// modules/stats/main.js</span>
+
+<span class="nx">define</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">require</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">$</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'jquery'</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="nx">showDetails</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">container</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/stats'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$</span><span class="p">(</span><span class="nx">container</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s1">'&lt;stats&gt;'</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">stats</span> <span class="o">+</span> <span class="s1">'&lt;/stats&gt;'</span><span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>Internal implementation is hidden so developers are not care what's happens inside. Want show stats details? Okay - call showDetails in Stats Component.</p>
+
+<h2>
+<a name="benefits" class="anchor" href="#benefits"><span class="octicon octicon-link"></span></a>Benefits</h2>
       </section>
     </div>
 
