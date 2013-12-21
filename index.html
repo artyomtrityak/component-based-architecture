@@ -1,50 +1,97 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Component-based Architecture by artyomtrityak</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Frontend Components-based Architecture : javascript, frontend, architecture" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Frontend Components-based Architecture</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header">Component-based Architecture</h1>
-        <p class="header"></p>
 
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/artyomtrityak/component-based-architecture/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/artyomtrityak/component-based-architecture/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/artyomtrityak/component-based-architecture">View On GitHub</a></li>
-        </ul>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/artyomtrityak/component-based-architecture">View on GitHub</a>
 
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/artyomtrityak">artyomtrityak</a></p>
+          <h1 id="project_title">Frontend Components-based Architecture</h1>
+          <h2 id="project_tagline">javascript, frontend, architecture</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/artyomtrityak/component-based-architecture/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/artyomtrityak/component-based-architecture/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-      </header>
-      <section>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
 <a name="intro" class="anchor" href="#intro"><span class="octicon octicon-link"></span></a>Intro</h1>
 
-<p>This article is accumulation of my experience building frontend apps architectures. Concepts i am writing about are fine for small and big apps, mobile and web.</p>
+<p>This article is accumulation of my experience building frontend apps architectures. Concepts i am writing about are fine for small and big apps, mobile and web.
+I assume that everyone knows BackboneJS basics or at least understands that i am talking about.</p>
 
 <h2>
 <a name="problem" class="anchor" href="#problem"><span class="octicon octicon-link"></span></a>Problem</h2>
 
-<p>When application starts growing it takes more and more time to add new features, catch bugs and make refactoring.</p>
+<p>When application starts growing it takes more and more time to add new features, catch bugs and make refactoring.
+I assume that everyone will understand BackboneJS examples.</p>
+
+<h2>
+<a name="why-this-happens" class="anchor" href="#why-this-happens"><span class="octicon octicon-link"></span></a>Why this happens?</h2>
+
+<ol>
+<li>Cross dependencies
+It's common practice when you need something that does not exist in current file but exist somewhere else in your project, you are just importing staff you need and use it.
+For example:</li>
+</ol><div class="highlight highlight-js"><pre><span class="nx">header</span><span class="o">-</span><span class="nx">view</span><span class="p">.</span><span class="nx">js</span>
+
+<span class="kd">var</span> <span class="nx">StatsView</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'views/stats'</span><span class="p">),</span>
+    <span class="nx">StatsModel</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'models/stats'</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">HeaderView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">statsModel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsModel</span><span class="p">(),</span>
+        <span class="nx">statsView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsView</span><span class="p">({</span><span class="nx">model</span><span class="o">:</span> <span class="nx">statsModel</span><span class="p">});</span>
+    <span class="nx">statsModel</span><span class="p">.</span><span class="nx">fetch</span><span class="p">({</span><span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">'.user'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">statsView</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span>
+    <span class="p">}});</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>This is good and bad.
+Good - it looks pretty easy - if we need show Stats view in some place we can just include it and use.
+Bad - Header view should know about internal Stats view implementation. It should know that it requires Stats model and should fetch data before render.</p>
+
+<p>And what happens if StatsView will be changed? If it will use for example Collection instead of Model? This case we should make lookup if whole project to understand who is using our StatsView and modify each entry.</p>
+
+<p>This moves us to second problem</p>
+
+<ol>
+<li><p>Big scope
+Developers should always keep in mind whole project because they should know what part of the project is using current file (view, model etc) they are working on.
+This is fine for small projects but a problem for another. Developers start feel fatigue very fast. They want start working on something new and small again.</p></li>
+<li><p>DRY (don't repeat yourself)</p></li>
+</ol>
       </section>
-      <footer>
-        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Frontend Components-based Architecture maintained by <a href="https://github.com/artyomtrityak">artyomtrityak</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+
+    
+
   </body>
 </html>
