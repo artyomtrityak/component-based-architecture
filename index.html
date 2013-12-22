@@ -250,12 +250,12 @@ For example Backbone.js</p>
     <span class="s1">'modules/user'</span>
   <span class="p">]</span>
 <span class="p">});</span>
-<span class="err">``</span>
+</pre></div>
 
-<span class="nx">And</span> <span class="nx">use</span> <span class="nx">it</span>
+<p>And use it</p>
 
-<span class="err">```</span><span class="nx">js</span>
-<span class="kd">var</span> <span class="nx">StatsModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/stats'</span><span class="p">);</span> <span class="c1">// modules/stats/main.js will be called</span>
+<div class="highlight highlight-js"><pre>
+<span class="kd">var</span> <span class="nx">StatsModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/stats'</span><span class="p">);</span>
 </pre></div>
 
 <p>This gives us needed level of abstraction.</p>
@@ -273,7 +273,9 @@ For example Backbone.js</p>
 <li>Create modal window module which can show  any view as modal window</li>
 </ol><div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">StatsModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/stats'</span><span class="p">),</span>
     <span class="nx">ModalModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/modal'</span><span class="p">);</span>
-    <span class="nx">statsModule</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsModule</span><span class="p">(),</span>
+
+<span class="kd">var</span> <span class="nx">statsModule</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsModule</span><span class="p">(),</span>
+    <span class="nx">modalModule</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ModalModule</span><span class="p">(),</span>
     <span class="nx">details</span> <span class="o">=</span> <span class="nx">statsModule</span><span class="p">.</span><span class="nx">getDetails</span><span class="p">();</span>
 
 <span class="nx">ModalModule</span><span class="p">.</span><span class="nx">makeModal</span><span class="p">(</span><span class="nx">details</span><span class="p">);</span>
