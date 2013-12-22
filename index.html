@@ -269,9 +269,9 @@ For example Backbone.js</p>
 
 <p>There are two ways how this problem can be solved:</p>
 
-<ol>
-<li>Create modal window module which can show  any view as modal window</li>
-</ol><div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">StatsModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/stats'</span><span class="p">),</span>
+<p>1) Create modal window module which can show  any view as modal window</p>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">StatsModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/stats'</span><span class="p">),</span>
     <span class="nx">ModalModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/modal'</span><span class="p">);</span>
 
 <span class="kd">var</span> <span class="nx">statsModule</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsModule</span><span class="p">(),</span>
@@ -281,9 +281,9 @@ For example Backbone.js</p>
 <span class="nx">ModalModule</span><span class="p">.</span><span class="nx">makeModal</span><span class="p">(</span><span class="nx">details</span><span class="p">);</span>
 </pre></div>
 
-<ol>
-<li>Place base shared elements in shared folder</li>
-</ol><pre><code>application/
+<p>2) Place base shared elements in shared folder</p>
+
+<pre><code>application/
     app.js
     modules/
     shared/
