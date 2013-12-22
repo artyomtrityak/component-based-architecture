@@ -34,8 +34,9 @@
         <h1>
 <a name="intro" class="anchor" href="#intro"><span class="octicon octicon-link"></span></a>Intro</h1>
 
-<p>This article is accumulation of my experience building frontend apps architectures. Concepts i am writing about are fine for small and big apps, mobile and web.
-I assume that everyone knows BackboneJS basics or at least understands it as pseudocode.</p>
+<p>This article is accumulation of my experience building frontend apps architectures. Concepts i am writing about are fine for small and big apps, mobile and web.</p>
+
+<p>I assume that everyone knows BackboneJS basics or at least understands it as pseudocode.</p>
 
 <h2>
 <a name="problem" class="anchor" href="#problem"><span class="octicon octicon-link"></span></a>Problem</h2>
@@ -198,10 +199,103 @@ Anything you want.</p>
 <h3>
 <a name="no-cross-dependencies" class="anchor" href="#no-cross-dependencies"><span class="octicon octicon-link"></span></a>No cross dependencies</h3>
 
-<p>Developers are working with components, not with views / models etc. This reduces complexity of application and allows reuse implemented functionality.</p>
+<p>We are working with high level abstraction - components, not directly with views / models etc. This reduces complexity of application and allows reuse implemented functionality.</p>
 
 <h1>
 <a name="practice" class="anchor" href="#practice"><span class="octicon octicon-link"></span></a>Practice</h1>
+
+<h2>
+<a name="application-structure" class="anchor" href="#application-structure"><span class="octicon octicon-link"></span></a>Application structure</h2>
+
+<h3>
+<a name="base" class="anchor" href="#base"><span class="octicon octicon-link"></span></a>Base</h3>
+
+<p>At first we have to use one place for modules in our application.</p>
+
+<pre><code>application/
+    app.js
+    modules/
+        stats/
+        user/
+</code></pre>
+
+<p>Each module can have different structure based on which framework is using in application.
+For example Backbone.js</p>
+
+<pre><code>applications/
+    modules/
+        stats/
+            main.js
+            models/
+                model.js
+                collection.js
+            views/
+                templates/
+                    extended.hbs
+                    short.hbs
+                extended.js
+                short.js
+</code></pre>
+
+<p>Module contains all needed files - views, templates, models, collections etc. Main.js - is entry point of module which provides Public API.</p>
+
+<p>For example if we are using Require.js as AMD loader we can define packages in Require.js config so we can make operation with modules and <code>main.js</code> file will be called automatically.</p>
+
+<div class="highlight highlight-js"><pre><span class="c1">// config.js</span>
+
+<span class="nx">requirejs</span><span class="p">.</span><span class="nx">config</span><span class="p">({</span>
+  <span class="p">...</span>
+  <span class="nx">packages</span><span class="o">:</span> <span class="p">[</span>
+    <span class="s1">'modules/stats'</span><span class="p">,</span>
+    <span class="s1">'modules/user'</span>
+  <span class="p">]</span>
+<span class="p">});</span>
+<span class="err">``</span>
+
+<span class="nx">And</span> <span class="nx">use</span> <span class="nx">it</span>
+
+<span class="err">```</span><span class="nx">js</span>
+<span class="kd">var</span> <span class="nx">StatsModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/stats'</span><span class="p">);</span> <span class="c1">// modules/stats/main.js will be called</span>
+</pre></div>
+
+<p>This gives us needed level of abstraction.</p>
+
+<h3>
+<a name="shared-functionality" class="anchor" href="#shared-functionality"><span class="octicon octicon-link"></span></a>Shared functionality</h3>
+
+<p>When application starts growing we see that some functionality is duplicating.</p>
+
+<p>For example we are creating modal windows and it's nice idea to use some <code>base-modal-view.js</code> to avoid duplication.</p>
+
+<p>There are two ways how this problem can be solved:</p>
+
+<ol>
+<li>Create modal window module which can show  any view as modal window</li>
+</ol><div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">StatsModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/stats'</span><span class="p">),</span>
+    <span class="nx">ModalModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/modal'</span><span class="p">);</span>
+    <span class="nx">statsModule</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsModule</span><span class="p">(),</span>
+    <span class="nx">details</span> <span class="o">=</span> <span class="nx">statsModule</span><span class="p">.</span><span class="nx">getDetails</span><span class="p">();</span>
+
+<span class="nx">ModalModule</span><span class="p">.</span><span class="nx">makeModal</span><span class="p">(</span><span class="nx">details</span><span class="p">);</span>
+</pre></div>
+
+<ol>
+<li>Place base shared elements in shared folder</li>
+</ol><pre><code>application/
+    app.js
+    modules/
+    shared/
+        views/
+            base-modal.js
+</code></pre>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">BaseModalView</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'shared/views/base-modal'</span><span class="p">);</span>
+
+<span class="k">return</span> <span class="nx">BaseModalView</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>But we should keep in mind that <code>shared/</code> folder just for <em>shared base functionality</em>, not for modules specific views, models etc</p>
       </section>
     </div>
 
