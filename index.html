@@ -201,6 +201,13 @@ Anything you want.</p>
 
 <p>We are working with high level abstraction - components, not directly with views / models etc. This reduces complexity of application and allows reuse implemented functionality.</p>
 
+<h3>
+<a name="testing" class="anchor" href="#testing"><span class="octicon octicon-link"></span></a>Testing</h3>
+
+<p>It's very easy and important to test components.</p>
+
+<p>Unittests should cover components Public API - this case we can make any internal changes in the component. If public api requests / responses are same it means module works as expected. No need to test models / views but we still can be sure in tests results.</p>
+
 <h1>
 <a name="practice" class="anchor" href="#practice"><span class="octicon octicon-link"></span></a>Practice</h1>
 
@@ -267,21 +274,7 @@ For example Backbone.js</p>
 
 <p>For example we are creating modal windows and it's nice idea to use some <code>base-modal-view.js</code> to avoid duplication.</p>
 
-<p>There are two ways how this problem can be solved:</p>
-
-<p>1) Create modal window module which can show  any view as modal window</p>
-
-<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">StatsModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/stats'</span><span class="p">),</span>
-    <span class="nx">ModalModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/modal'</span><span class="p">);</span>
-
-<span class="kd">var</span> <span class="nx">statsModule</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsModule</span><span class="p">(),</span>
-    <span class="nx">modalModule</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ModalModule</span><span class="p">(),</span>
-    <span class="nx">details</span> <span class="o">=</span> <span class="nx">statsModule</span><span class="p">.</span><span class="nx">getDetails</span><span class="p">();</span>
-
-<span class="nx">ModalModule</span><span class="p">.</span><span class="nx">makeModal</span><span class="p">(</span><span class="nx">details</span><span class="p">);</span>
-</pre></div>
-
-<p>2) Place base shared elements in shared folder</p>
+<p>This problem can be solved by placing base shared elements in shared folder</p>
 
 <pre><code>application/
     app.js
@@ -298,6 +291,9 @@ For example Backbone.js</p>
 </pre></div>
 
 <p>But we should keep in mind that <code>shared/</code> folder just for <em>shared base functionality</em>, not for modules specific views, models etc</p>
+
+<h2>
+<a name="components-communication" class="anchor" href="#components-communication"><span class="octicon octicon-link"></span></a>Components communication</h2>
       </section>
     </div>
 
