@@ -309,43 +309,39 @@ This case we need some controller which will allow do cross-components communica
             main.js
 </code></pre>
 
-<p>The role of screen is include all components are using in this screen and make cross-components communication.</p>
+<p>The role of screen is including all modules for current screen are making cross-components communication.</p>
 
 <div class="highlight highlight-js"><pre><span class="c1">// screens/home/main.js</span>
 
 <span class="nx">define</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">require</span><span class="p">)</span> <span class="p">{</span>
 
-  <span class="kd">var</span> <span class="nx">StatsModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/stats'</span><span class="p">),</span>
-      <span class="nx">UserModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/user'</span><span class="p">),</span>
+  <span class="c1">// Include all modules are using in current screen</span>
+  <span class="kd">var</span> <span class="nx">UserModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/user'</span><span class="p">),</span>
       <span class="nx">HeaderModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/header'</span><span class="p">),</span>
       <span class="nx">Controller</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{};</span>
 
+  <span class="c1">// When screen starts execute initialize</span>
   <span class="nx">Controller</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">initialize</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Create new User component instance </span>
     <span class="k">this</span><span class="p">.</span><span class="nx">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">UserModule</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'user:logout'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">_userLogout</span><span class="p">);</span>
 
+    <span class="c1">// Create new Header component instance</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">header</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">HeaderModule</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">header</span><span class="p">.</span><span class="nx">show</span><span class="p">({</span>
-      <span class="nx">user</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">getDetails</span><span class="p">()</span>
-    <span class="p">});</span>
+    <span class="c1">// If user will click on "Add" button in header view</span>
+    <span class="c1">// we should inform User component and execute needed Public API</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">header</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'user:new'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">_addNewUser</span><span class="p">);</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">header</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'stats:show'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">_showStats</span><span class="p">);</span>
-
-    <span class="k">this</span><span class="p">.</span><span class="nx">stats</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsModule</span><span class="p">();</span>
+    <span class="c1">// Use promises to show user details when they will be loaded</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">getDetails</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_showUser</span><span class="p">);</span>
   <span class="p">}</span>
 
   <span class="nx">Controller</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">_addNewUser</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Open new user modal window</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">showAddModal</span><span class="p">();</span>
   <span class="p">}</span>
 
-  <span class="nx">Controller</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">_userLogout</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">header</span><span class="p">.</span><span class="nx">show</span><span class="p">({</span>
-      <span class="nx">user</span><span class="o">:</span> <span class="kc">null</span>
-    <span class="p">});</span>
-  <span class="p">}</span>
-
-  <span class="nx">Controller</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">_showStats</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">container</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">stats</span><span class="p">.</span><span class="nx">show</span><span class="p">({</span><span class="nx">container</span><span class="o">:</span> <span class="nx">container</span><span class="p">});</span>
+  <span class="nx">Controller</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">_showUser</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">details</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Render user details in header</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">header</span><span class="p">.</span><span class="nx">show</span><span class="p">({</span><span class="nx">user</span><span class="o">:</span> <span class="nx">details</span><span class="p">});</span>
   <span class="p">}</span>
 
   <span class="k">return</span> <span class="nx">Controller</span><span class="p">;</span>
