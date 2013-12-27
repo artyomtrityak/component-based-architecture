@@ -357,10 +357,23 @@ This case we need some controller which will allow do cross-components communica
 
 <p>So result project structure is</p>
 
-<pre><code>applications/
-  shared/ &lt;- shared base functionality
-  modules/ &lt;- reusable components
-  screens/ &lt;- application "pages"
+<pre><code>application/
+    app.js
+    shared/ &lt;- shared base functionality
+        views/
+        models/
+        utils/
+        ...
+    modules/ &lt;- reusable components
+        user/
+        stats/
+        news/
+        ...
+    screens/ &lt;- application "pages"
+        home/
+        news/
+        contacts/
+        ...
 </code></pre>
 
 <p>That's it for now. Feel free to ask questions as github issues for this project <a href="https://github.com/artyomtrityak/component-based-architecture/issues">https://github.com/artyomtrityak/component-based-architecture/issues</a></p>
