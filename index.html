@@ -34,22 +34,22 @@
         <h1>
 <a name="intro" class="anchor" href="#intro"><span class="octicon octicon-link"></span></a>Intro</h1>
 
-<p>This article is accumulation of my experience building frontend apps architectures. Concepts i am writing about are fine for small and big apps, mobile and web.</p>
+<p>This article is accumulation of my experience in building frontend app architectures. Concepts I am writing about are fine for small and big apps, mobile and web.</p>
 
 <p>I assume that everyone knows BackboneJS basics or at least understands it as pseudocode.</p>
 
 <h2>
 <a name="problem" class="anchor" href="#problem"><span class="octicon octicon-link"></span></a>Problem</h2>
 
-<p>When application starts growing it takes more and more time to add new features, catch bugs and make refactoring.</p>
+<p>When application starts growing it takes more and more time to add new features, detect bugs and make refactoring.</p>
 
 <h2>
-<a name="why-this-happens" class="anchor" href="#why-this-happens"><span class="octicon octicon-link"></span></a>Why this happens?</h2>
+<a name="why-this-happens" class="anchor" href="#why-this-happens"><span class="octicon octicon-link"></span></a>Why does it happen?</h2>
 
 <h3>
 <a name="cross-dependencies" class="anchor" href="#cross-dependencies"><span class="octicon octicon-link"></span></a>Cross dependencies</h3>
 
-<p>It's common practice when if you need something that does not exist in current file but exists somewhere else in your project, you are just importing staff you need and use it.</p>
+<p>It's common practice when you need something that does not exist in current file but exists somewhere else in your project and you just import staff you need and use it.</p>
 
 <p>For example:</p>
 
@@ -74,46 +74,46 @@
 <span class="p">});</span>
 </pre></div>
 
-<p>This is good and bad.</p>
+<p>This has its pros and cons.</p>
 
-<p>Good - it looks pretty easy - if we need show Stats view in some place we can just include it and use.
-Bad - Header view should know about internal Stats view implementation. It should know that it requires Stats model and should fetch data before render.</p>
+<p>Pros are: it looks pretty easy and if we need to show Stats view in some place we can just include it and use.
+Cons are: Header view should know about internal Stats view implementation. It should know that it requires Stats model and should fetch data before render.</p>
 
-<p>And what happens if Stats view will be changed? If it will use for example Collection instead of Model? </p>
+<p>And what happens if Stats view is changed? If it uses, for example, Collection instead of Model? </p>
 
-<p>This case we should make lookup if whole project to understand who is using our Stats view and modify each entry.</p>
+<p>This case we should search through the whole project to understand what uses our Stats view and modify each entry.</p>
 
 <p>This moves us to second problem.</p>
 
 <h3>
 <a name="big-scope" class="anchor" href="#big-scope"><span class="octicon octicon-link"></span></a>Big scope</h3>
 
-<p>Developers should always keep in mind whole project because they should know what part of the project uses view / model they are currently working with.</p>
+<p>Developers should always keep in mind the whole project because they should know what part of the project uses view / model they are currently working with.</p>
 
-<p>This is fine for small projects but a problem for another. Sometimes we are working with thousands of files in one project. And dependencies can be very complex: this view extends that view which uses another mixin we want to change etc</p>
+<p>This is fine for small projects, but a problem for another. Sometimes we work with thousands of files in one project. And dependencies can be very complex: this view extends that view which uses another mixin we want to change etc</p>
 
-<p>Developers start feel fatigue very fast.
+<p>Developers start feeling fatigue very fast.
 Each modification requires "compiling whole project in the head" to understand what can be broken and what can be affected by this change.</p>
 
-<p>As result - they want start working on something new and small again.</p>
+<p>As a result - they want to start working on something new and small again.</p>
 
 <h3>
 <a name="dry-dont-repeat-yourself" class="anchor" href="#dry-dont-repeat-yourself"><span class="octicon octicon-link"></span></a>DRY (don't repeat yourself)</h3>
 
 <p>I think everyone knows this principle. But do we really follow it if we still should write same code (create model, fetching, create view) again and again?</p>
 
-<p>The main goal DRY is allow to create something that can be reusable but not cause Cross dependencies and Big scope issues.</p>
+<p>The main goal of DRY is to allow to create something that can be reusable but not cause Cross dependencies and Big scope issues.</p>
 
 <h1>
 <a name="component-based-architecture" class="anchor" href="#component-based-architecture"><span class="octicon octicon-link"></span></a>Component-based architecture</h1>
 
 <p>This is not something new.
-I have just collected practices which helped me solve problems together and use them in my projects. And it works (at least for me).</p>
+I have just collected practices which helped me to solve problems together and use them in my projects. And it works (at least for me).</p>
 
 <h2>
 <a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h2>
 
-<p>The main goal is create reusable components which provides Public API and hides implementation inside.</p>
+<p>The main goal is to create reusable components which provide Public API and hide implementation inside.</p>
 
 <p>For example:</p>
 
@@ -133,9 +133,9 @@ I have just collected practices which helped me solve problems together and use 
 <span class="p">})</span>
 </pre></div>
 
-<p>This case we follow DRY as much as possible - no code duplication. As bonus we received reusable Stats component which hides implementation and gives Public API - showDetails method.</p>
+<p>In this case we follow DRY as much as possible - no code duplication. As a bonus we received reusable Stats component which hides implementation and gives Public API - showDetails method.</p>
 
-<p>What inside?
+<p>What is inside?
 Anything you want.</p>
 
 <p>Example 1:</p>
@@ -187,7 +187,7 @@ Anything you want.</p>
 <span class="p">});</span>
 </pre></div>
 
-<p>Internal implementation is hidden so developers are not care what's happens inside. Want show stats details? Okay - use showDetails method of Stats component.</p>
+<p>Internal implementation is hidden so developers don't care what happens inside. Do you want to show stats details? Okay - use showDetails method of Stats component.</p>
 
 <h2>
 <a name="benefits" class="anchor" href="#benefits"><span class="octicon octicon-link"></span></a>Benefits</h2>
@@ -195,25 +195,25 @@ Anything you want.</p>
 <h3>
 <a name="no-big-scope" class="anchor" href="#no-big-scope"><span class="octicon octicon-link"></span></a>No big scope</h3>
 
-<p>Developers are working with small component scope which reduces complexity of changes even in big application.</p>
+<p>Developers are working with a small component scope which reduces complexity of changes even in a big application.</p>
 
-<p>No need to keep in mind whole project because developer takes care about internal implementation and Public API. So they <em>feel free to make any changes if Public API stays same</em>.</p>
+<p>No need to keep in mind the whole project, because developer takes care about internal implementation and Public API. So they <em>feel free to make any changes if Public API stays the same</em>.</p>
 
-<p>So even in big project refactoring or new techniques can be implemented without any problems in local component scope.</p>
+<p>So even in a big project refactoring or new techniques can be implemented without any problems in local component scope.</p>
 
 <h3>
 <a name="no-cross-dependencies" class="anchor" href="#no-cross-dependencies"><span class="octicon octicon-link"></span></a>No cross dependencies</h3>
 
-<p>We are working with high level abstraction - components, not directly with views / models etc. This reduces complexity of application and allows reuse implemented functionality.</p>
+<p>We are working with high level abstraction - components, not directly with views / models etc. This reduces application complexity and allows reuse implemented functionality.</p>
 
-<p>So we can use only controllers Public API to make operations with component. No direct calls to views / models.</p>
+<p>So we can use only controllers Public API to make operations with a component. No direct calls to views / models.</p>
 
 <h3>
 <a name="testing" class="anchor" href="#testing"><span class="octicon octicon-link"></span></a>Testing</h3>
 
 <p>It's very easy and important to test components.</p>
 
-<p>Unittests should cover components Public API - this case we can make any internal changes in the component. If public api requests / responses are same it means module works as expected. No need to test models / views but we still can be sure in tests results.</p>
+<p>Unittests should cover components Public API - in this case we can make any internal changes in the component. If public api requests / responses are the same it means module works as expected. No need to test models / views but we still can be sure in tests results.</p>
 
 <h1>
 <a name="practice" class="anchor" href="#practice"><span class="octicon octicon-link"></span></a>Practice</h1>
@@ -233,7 +233,7 @@ Anything you want.</p>
         user/
 </code></pre>
 
-<p>Each module can have different structure based on which framework is using in application.
+<p>Each module can have different structure based on which framework is used in application.
 For example Backbone.js</p>
 
 <pre><code>applications/
@@ -251,9 +251,9 @@ For example Backbone.js</p>
                 short.js
 </code></pre>
 
-<p>Module contains all needed files - views, templates, models, collections etc. Main.js - is entry point of module which provides Public API.</p>
+<p>Module contains all needed files - views, templates, models, collections etc. Main.js - is an entry point of module which provides Public API.</p>
 
-<p>For example if we are using Require.js as AMD loader we can define packages in Require.js config so we can make operations with modules. This case <code>main.js</code> file will be called automatically.</p>
+<p>For example, if we use Require.js as AMD loader we can define packages in Require.js config so we can make operations with modules. In this case <code>main.js</code> file will be called automatically.</p>
 
 <div class="highlight highlight-js"><pre><span class="c1">// config.js</span>
 
@@ -277,9 +277,9 @@ For example Backbone.js</p>
 <h3>
 <a name="shared-functionality" class="anchor" href="#shared-functionality"><span class="octicon octicon-link"></span></a>Shared functionality</h3>
 
-<p>When application starts growing we see that some functionality is duplicating.</p>
+<p>When application starts growing we see that some functionality is duplicated.</p>
 
-<p>For example we are creating modal windows and it's nice idea to use some <code>base-modal-view.js</code> to avoid duplication.</p>
+<p>For example, we create modal windows and it's nice idea to use some <code>base-modal-view.js</code> to avoid duplication.</p>
 
 <p>This problem can be solved by placing base shared elements in shared folder</p>
 
@@ -302,10 +302,10 @@ For example Backbone.js</p>
 <h2>
 <a name="components-communication" class="anchor" href="#components-communication"><span class="octicon octicon-link"></span></a>Components communication</h2>
 
-<p>Next step for reduce components cross dependencies is disallow use components inside another components.
-This case we need some controller which will allow do cross-components communication.</p>
+<p>Next step to reduce components cross dependencies is to disallow using components inside other components.
+In this case we need some controller which allows to do cross-components communication.</p>
 
-<p>Let's create new <code>screens/</code> folder.</p>
+<p>Let's create a new <code>screens/</code> folder.</p>
 
 <pre><code>application/
     app.js
@@ -316,13 +316,13 @@ This case we need some controller which will allow do cross-components communica
             main.js
 </code></pre>
 
-<p>The role of screen is including all modules for current screen are making cross-components communication.</p>
+<p>The role of screen is to include all modules for current screen and make cross-components communication.</p>
 
 <div class="highlight highlight-js"><pre><span class="c1">// screens/home/main.js</span>
 
 <span class="nx">define</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">require</span><span class="p">)</span> <span class="p">{</span>
 
-  <span class="c1">// Include all modules are using in current screen</span>
+  <span class="c1">// Include all modules that are used in current screen</span>
   <span class="kd">var</span> <span class="nx">UserModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/user'</span><span class="p">),</span>
       <span class="nx">HeaderModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/header'</span><span class="p">),</span>
       <span class="nx">Controller</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{};</span>
