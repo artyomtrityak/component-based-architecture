@@ -195,16 +195,16 @@ Anything you want.</p>
 <h3>
 <a name="no-big-scope" class="anchor" href="#no-big-scope"><span class="octicon octicon-link"></span></a>No big scope</h3>
 
-<p>Developers are working with small component scope which reduces complexity of changes even in big application.</p>
+<p>Developers are working with a small component scope which reduces complexity of changes even in a big application.</p>
 
-<p>No need to keep in mind whole project because developer takes care about internal implementation and Public API. So they <em>feel free to make any changes if Public API stays same</em>.</p>
+<p>No need to keep in mind the whole project, because developer takes care about internal implementation and Public API. So they <em>feel free to make any changes if Public API stays the same</em>.</p>
 
-<p>So even in big project refactoring or new techniques can be implemented without any problems in local component scope.</p>
+<p>So even in a big project refactoring or new techniques can be implemented without any problems in local component scope.</p>
 
 <h3>
 <a name="no-cross-dependencies" class="anchor" href="#no-cross-dependencies"><span class="octicon octicon-link"></span></a>No cross dependencies</h3>
 
-<p>We are working with high level abstraction - components, not directly with views / models etc. This reduces complexity of application and allows reuse implemented functionality.</p>
+<p>We are working with high level abstraction - components, not directly with views / models etc. This reduces application complexity and allows reuse implemented functionality.</p>
 
 <p>So we can use only controllers Public API to make operations with component. No direct calls to views / models.</p>
 
@@ -213,7 +213,7 @@ Anything you want.</p>
 
 <p>It's very easy and important to test components.</p>
 
-<p>Unittests should cover components Public API - this case we can make any internal changes in the component. If public api requests / responses are same it means module works as expected. No need to test models / views but we still can be sure in tests results.</p>
+<p>Unittests should cover components Public API - in this case we can make any internal changes in the component. If public api requests / responses are the same it means module works as expected. No need to test models / views but we still can be sure in tests results.</p>
 
 <h1>
 <a name="practice" class="anchor" href="#practice"><span class="octicon octicon-link"></span></a>Practice</h1>
@@ -233,7 +233,7 @@ Anything you want.</p>
         user/
 </code></pre>
 
-<p>Each module can have different structure based on which framework is using in application.
+<p>Each module can have different structure based on which framework is used in application.
 For example Backbone.js</p>
 
 <pre><code>applications/
@@ -253,7 +253,7 @@ For example Backbone.js</p>
 
 <p>Module contains all needed files - views, templates, models, collections etc. Main.js - is entry point of module which provides Public API.</p>
 
-<p>For example if we are using Require.js as AMD loader we can define packages in Require.js config so we can make operations with modules. This case <code>main.js</code> file will be called automatically.</p>
+<p>For example, if we are using Require.js as AMD loader we can define packages in Require.js config so we can make operations with modules. In this case <code>main.js</code> file will be called automatically.</p>
 
 <div class="highlight highlight-js"><pre><span class="c1">// config.js</span>
 
@@ -277,9 +277,9 @@ For example Backbone.js</p>
 <h3>
 <a name="shared-functionality" class="anchor" href="#shared-functionality"><span class="octicon octicon-link"></span></a>Shared functionality</h3>
 
-<p>When application starts growing we see that some functionality is duplicating.</p>
+<p>When application starts growing we see that some functionality is duplicated.</p>
 
-<p>For example we are creating modal windows and it's nice idea to use some <code>base-modal-view.js</code> to avoid duplication.</p>
+<p>For example, we create modal windows and it's nice idea to use some <code>base-modal-view.js</code> to avoid duplication.</p>
 
 <p>This problem can be solved by placing base shared elements in shared folder</p>
 
@@ -302,10 +302,10 @@ For example Backbone.js</p>
 <h2>
 <a name="components-communication" class="anchor" href="#components-communication"><span class="octicon octicon-link"></span></a>Components communication</h2>
 
-<p>Next step for reduce components cross dependencies is disallow use components inside another components.
-This case we need some controller which will allow do cross-components communication.</p>
+<p>Next step to reduce components cross dependencies is to disallow using components inside other components.
+In this case we need some controller which allows to do cross-components communication.</p>
 
-<p>Let's create new <code>screens/</code> folder.</p>
+<p>Let's create a new <code>screens/</code> folder.</p>
 
 <pre><code>application/
     app.js
@@ -316,13 +316,13 @@ This case we need some controller which will allow do cross-components communica
             main.js
 </code></pre>
 
-<p>The role of screen is including all modules for current screen are making cross-components communication.</p>
+<p>The role of screen is to include all modules for current screen and make cross-components communication.</p>
 
 <div class="highlight highlight-js"><pre><span class="c1">// screens/home/main.js</span>
 
 <span class="nx">define</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">require</span><span class="p">)</span> <span class="p">{</span>
 
-  <span class="c1">// Include all modules are using in current screen</span>
+  <span class="c1">// Include all modules that are used in current screen</span>
   <span class="kd">var</span> <span class="nx">UserModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/user'</span><span class="p">),</span>
       <span class="nx">HeaderModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/header'</span><span class="p">),</span>
       <span class="nx">Controller</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{};</span>
