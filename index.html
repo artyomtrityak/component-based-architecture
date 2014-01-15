@@ -1,36 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Frontend Components-based Architecture : javascript, frontend, architecture" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Frontend Components-based Architecture by artyomtrityak</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <title>Frontend Components-based Architecture</title>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/artyomtrityak/component-based-architecture">View on GitHub</a>
-
-          <h1 id="project_title">Frontend Components-based Architecture</h1>
-          <h2 id="project_tagline">javascript, frontend, architecture</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/artyomtrityak/component-based-architecture/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/artyomtrityak/component-based-architecture/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+    <div class="wrapper">
+      <header>
+        <h1>Frontend Components-based Architecture</h1>
+        <p>javascript, frontend, architecture</p>
+        <p class="view"><a href="https://github.com/artyomtrityak/component-based-architecture">View the Project on GitHub <small>artyomtrityak/component-based-architecture</small></a></p>
+        <ul>
+          <li><a href="https://github.com/artyomtrityak/component-based-architecture/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/artyomtrityak/component-based-architecture/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/artyomtrityak/component-based-architecture">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <h1>
 <a name="intro" class="anchor" href="#intro"><span class="octicon octicon-link"></span></a>Intro</h1>
 
@@ -51,11 +47,12 @@
 
 <p>It's common practice when you need something that does not exist in current file but exists somewhere else in your project and you just import staff you need and use it.</p>
 
-<p>For example:</p>
+<p>For example developer wants to display stats in header view:</p>
 
 <div class="highlight highlight-js"><pre><span class="c1">//header-view.js</span>
 
 <span class="nx">define</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">require</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Including stats view and model</span>
   <span class="kd">var</span> <span class="nx">StatsView</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'views/stats'</span><span class="p">),</span>
       <span class="nx">StatsModel</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'models/stats'</span><span class="p">);</span>
 
@@ -63,6 +60,8 @@
     <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">statsModel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsModel</span><span class="p">(),</span>
           <span class="nx">statsView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsView</span><span class="p">({</span><span class="nx">model</span><span class="o">:</span> <span class="nx">statsModel</span><span class="p">});</span>
+
+      <span class="c1">// Fetch stats data from server and render view on success</span>
       <span class="nx">statsModel</span><span class="p">.</span><span class="nx">fetch</span><span class="p">({</span>
         <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
           <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">'.user'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">statsView</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">$el</span><span class="p">);</span>
@@ -70,7 +69,6 @@
       <span class="p">});</span>
     <span class="p">}</span>
   <span class="p">});</span>
-
 <span class="p">});</span>
 </pre></div>
 
@@ -80,18 +78,18 @@
 
 <p>Cons are: Header view should know about internal Stats view implementation. It should know that it requires Stats model and should fetch data before render.</p>
 
-<p>And what happens if Stats view is changed? If it uses, for example Collection instead of Model? </p>
+<p>And what happens if Stats view is changed? If it will use, for example Collection instead of Model? </p>
 
-<p>This case we should search through the whole project to understand what uses our Stats view and modify each entry.</p>
+<p>This case we should search through the whole project to understand what files use our Stats view and modify each entry.</p>
 
 <p>This moves us to second problem.</p>
 
 <h3>
 <a name="big-scope" class="anchor" href="#big-scope"><span class="octicon octicon-link"></span></a>Big scope</h3>
 
-<p>Developers should always keep in mind the whole project because they should know what part of the project uses view / model they are currently working with.</p>
+<p>Developers should always keep in mind the whole project. Why? Because they should understand that files will be affected if they will change something.</p>
 
-<p>This is fine for small projects, but a problem for another. Sometimes we work with thousands of files in one project. And dependencies can be very complex: this view extends that view which uses another mixin we want to change etc</p>
+<p>This is fine for small projects, but a problem for another. Sometimes we work with thousands of files in one project. Dependencies can be very complex: this view extends that view which uses another mixin we want to change etc</p>
 
 <p>Developers start feeling fatigue very fast.
 Each modification requires "compiling whole project in the head" to understand what can be broken and what can be affected by this change.</p>
@@ -121,11 +119,13 @@ I have just collected practices which helped me to solve problems together and u
 <div class="highlight highlight-js"><pre><span class="c1">// header-view.js</span>
 
 <span class="nx">define</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">require</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Including stats module and creating new instance</span>
   <span class="kd">var</span> <span class="nx">StatsModule</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'modules/stats'</span><span class="p">),</span>
       <span class="nx">statusModuleIns</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StatsModule</span><span class="p">();</span>
 
   <span class="kd">var</span> <span class="nx">HeaderView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
     <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="c1">// call public API method to show stats details</span>
       <span class="nx">statusModuleIns</span><span class="p">.</span><span class="nx">showDetails</span><span class="p">({</span>
         <span class="nx">container</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">'.user'</span><span class="p">)</span>
       <span class="p">});</span>
@@ -145,11 +145,14 @@ I have just collected practices which helped me to solve problems together and u
 <div class="highlight highlight-js"><pre><span class="c1">// modules/stats/main.js</span>
 
 <span class="nx">define</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">require</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Include local module model and view</span>
   <span class="kd">var</span> <span class="nx">Model</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./model'</span><span class="p">),</span>
       <span class="nx">View</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./view'</span><span class="p">),</span>
       <span class="nx">Controller</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{}</span>
 
+  <span class="c1">// Public API for module</span>
   <span class="nx">Controller</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">showDetails</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">container</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// internal logic</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">container</span> <span class="o">=</span> <span class="nx">container</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">model</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span> <span class="o">||</span> <span class="k">new</span> <span class="nx">Model</span><span class="p">();</span>
 
@@ -379,18 +382,20 @@ In this case we need some controller which allows to do cross-components communi
 </code></pre>
 
 <p>That's it for now. Feel free to ask questions as github issues for this project <a href="https://github.com/artyomtrityak/component-based-architecture/issues">https://github.com/artyomtrityak/component-based-architecture/issues</a></p>
+
+<h1>
+<a name="demo-projects" class="anchor" href="#demo-projects"><span class="octicon octicon-link"></span></a>DEMO projects</h1>
+
+<ul>
+<li><a href="https://github.com/artyomtrityak/just-test-it/">Just Test It</a></li>
+</ul>
       </section>
     </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Frontend Components-based Architecture maintained by <a href="https://github.com/artyomtrityak">artyomtrityak</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
+    <footer>
+      <p>Project maintained by <a href="https://github.com/artyomtrityak">artyomtrityak</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
-
   </body>
 </html>
